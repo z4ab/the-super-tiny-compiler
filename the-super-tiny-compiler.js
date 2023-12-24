@@ -592,6 +592,16 @@ function parser(tokens) {
       };
     }
 
+    // trying to add names for custom definitions
+    if (token.type === 'name') {
+      current++;
+
+      return {
+        type: 'Symbol',
+        value: token.value,
+      };
+    }
+
     // Next we're going to look for CallExpressions. We start this off when we
     // encounter an open parenthesis.
     if (
@@ -784,6 +794,7 @@ function traverser(ast, visitor) {
 
       // In the cases of `NumberLiteral` and `StringLiteral` we don't have any
       // child nodes to visit, so we'll just break.
+      case "Symbol":
       case 'NumberLiteral':
       case 'StringLiteral':
         break;
@@ -899,6 +910,15 @@ function transformer(ast) {
       },
     },
 
+    Symbol: {
+      enter(node, parent) {
+        parent._context.push({
+          type: 'Symbol',
+          value: node.value,
+        });
+      },
+    },
+
     // Next up, `CallExpression`.
     CallExpression: {
       enter(node, parent) {
@@ -992,7 +1012,7 @@ function codeGenerator(node) {
 
     // For `Identifier` we'll just return the `node`'s name.
     case 'Identifier':
-      return node.name;
+      return "toplevel." + node.name;
 
     // For `NumberLiteral` we'll just return the `node`'s value.
     case 'NumberLiteral':
@@ -1001,6 +1021,9 @@ function codeGenerator(node) {
     // For `StringLiteral` we'll add quotations around the `node`'s value.
     case 'StringLiteral':
       return '"' + node.value + '"';
+
+    case 'Symbol':
+      return "toplevel." + node.value;
 
     // And if we haven't recognized the node, we'll throw an error.
     default:
