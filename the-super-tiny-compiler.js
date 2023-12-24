@@ -509,7 +509,7 @@ function tokenizer(input) {
     if (char == SYM) {
       let value = '';
       char = input[++current];
-      while (LETTERS.test(char))
+      while (LETTERS.test(char) || NUMBERS.test(char))
       {
         value += char;
         char = input[++current];
