@@ -1,2 +1,4 @@
-(define "x" (add 1 1))
-(add 1 x)
+;; Add constants
+(define "x" 5) 
+(define "y" 2)
+(add x y)

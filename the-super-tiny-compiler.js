@@ -528,6 +528,18 @@ function tokenizer(input) {
       continue;
     }
 
+    // Check for comments and ignore
+    let COMMENT = ";"
+    if (char == COMMENT) {
+      let value = '';
+      while (char != "\r" && char != "\n") // until end of line
+      {
+        value += char;
+        char = input[++current];
+      }
+      continue;
+    }
+
     // Finally if we have not matched a character by now, we're going to throw
     // an error and completely exit.
     throw new TypeError('I dont know what this character is: ' + char);
@@ -676,7 +688,6 @@ function parser(tokens) {
       // And return the node.
       return node;
     }
-
     // Again, if we haven't recognized the token type by now we're going to
     // throw an error.
     throw new TypeError(token.type);

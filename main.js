@@ -23,6 +23,7 @@ fs.readFile('main.lang', 'utf8', (err, data) => {
         console.error(err);
         return;
     };
+    //console.log(tokenizer(data)); // tokenizer step
     var comp = compiler(data);
     console.log(comp);
     console.log(eval(comp));
