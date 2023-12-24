@@ -503,6 +503,21 @@ function tokenizer(input) {
       continue;
     }
 
+    // Check for symbols (used for definitions)
+    let LETTERS = /[a-z]/i;
+    let SYM = "'"
+    if (char == SYM) {
+      let value = '';
+      char = input[++current];
+      while (LETTERS.test(char))
+      {
+        value += char;
+        char = input[++current];
+      }
+      tokens.push({ type: 'symbol', value });
+      continue;
+    }
+
     // The last type of token will be a `name` token. This is a sequence of
     // letters instead of numbers, that are the names of functions in our lisp
     // syntax.
@@ -511,7 +526,6 @@ function tokenizer(input) {
     //    ^^^
     //    Name token
     //
-    let LETTERS = /[a-z]/i;
     if (LETTERS.test(char)) {
       let value = '';
 
@@ -539,6 +553,7 @@ function tokenizer(input) {
       }
       continue;
     }
+
 
     // Finally if we have not matched a character by now, we're going to throw
     // an error and completely exit.
@@ -604,12 +619,21 @@ function parser(tokens) {
       };
     }
 
-    // trying to add names for custom definitions
-    if (token.type === 'name') {
+    // trying to add symbols for custom definitions
+    if (token.type === 'symbol') {
       current++;
 
       return {
         type: 'Symbol',
+        value: token.value,
+      };
+    }
+
+    if (token.type === 'name') {
+      current++;
+
+      return {
+        type: 'Reference',
         value: token.value,
       };
     }
@@ -805,7 +829,8 @@ function traverser(ast, visitor) {
 
       // In the cases of `NumberLiteral` and `StringLiteral` we don't have any
       // child nodes to visit, so we'll just break.
-      case "Symbol":
+      case 'Reference':
+      case 'Symbol':
       case 'NumberLiteral':
       case 'StringLiteral':
         break;
@@ -929,6 +954,14 @@ function transformer(ast) {
         });
       },
     },
+    Reference: {
+      enter(node, parent) {
+        parent._context.push({
+          type: 'Reference',
+          value: node.value,
+        });
+      },
+    },
 
     // Next up, `CallExpression`.
     CallExpression: {
@@ -1034,6 +1067,9 @@ function codeGenerator(node) {
       return '"' + node.value + '"';
 
     case 'Symbol':
+      return '"' + node.value + '"';
+
+    case 'Reference':
       return "toplevel." + node.value;
 
     // And if we haven't recognized the node, we'll throw an error.

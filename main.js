@@ -18,12 +18,12 @@ var toplevel = {
 
 const fs = require('node:fs');
 
-fs.readFile('main.lang', 'utf8', (err, data) => {
+fs.readFile('main.lisp', 'utf8', (err, data) => {
     if (err) {
         console.error(err);
         return;
     };
-    //console.log(tokenizer(data)); // tokenizer step
+    console.log(tokenizer(data)); // tokenizer step
     var comp = compiler(data);
     console.log(comp);
     console.log(eval(comp));
