@@ -15,8 +15,15 @@ var toplevel = {
         toplevel[name] = value
     },
     add1: x => x+1,
+
+    not: (a) => !a,
+    and: (a, b) => a && b,
+    or: (a, b) => a || b,
+
+    equal: (a, b) => a === b,
+
     list: (...args) => [...args],
-    show: inp => { console.log(inp)},
+    show: (inp) => { console.log(inp) },
     map: (fn, lst) => {
         return lst.reduce((result, e) => {
             result.push(toplevel[fn](e));
@@ -31,6 +38,12 @@ var toplevel = {
             return eval(compiler(body));
         }
     },
+    if: (condition, fn, ...args) => {
+        if (condition)
+        {
+            return toplevel[fn](...args);
+        } 
+    }
 }
 
 const fs = require('node:fs');
@@ -45,5 +58,5 @@ fs.readFile('main.lisp', 'utf8', (err, data) => {
     var comp = compiler(data);
     //console.log(comp);
     eval(comp)
-    console.log(toplevel);
+    //console.log(toplevel);
 });

@@ -531,7 +531,7 @@ function tokenizer(input) {
 
       // Again we're just going to loop through all the letters pushing them to
       // a value.
-      while (LETTERS.test(char)) {
+      while (LETTERS.test(char) || NUMBERS.test(char)) {
         value += char;
         char = input[++current];
       }
