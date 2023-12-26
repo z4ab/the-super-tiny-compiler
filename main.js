@@ -53,10 +53,6 @@ fs.readFile('main.lisp', 'utf8', (err, data) => {
         console.error(err);
         return;
     };
-    //console.log(data);
-    //console.log(tokenizer(data)); // tokenizer step
     var comp = compiler(data);
-    //console.log(comp);
     eval(comp)
-    //console.log(toplevel);
 });
