@@ -1,6 +1,12 @@
+Note: This fork adds some extra functionality, and runs the "compiled" code using javascript
+
+The `main.lisp` file shows some of the functionality of the language.
+To run this file, run `main.js` using node
+
+---
+
 [![The Super Tiny Compiler](https://cloud.githubusercontent.com/assets/952783/21579290/5755288a-cf75-11e6-90e0-029529a44a38.png)](the-super-tiny-compiler.js)
 
-Note: This fork adds some extra functionality, and runs the "compiled" code using javascript
 
 ***Welcome to The Super Tiny Compiler!***
 
